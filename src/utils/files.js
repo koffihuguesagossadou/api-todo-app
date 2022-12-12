@@ -1,3 +1,4 @@
+const { throws } = require('assert');
 const fs = require('fs');
 
 module.exports = class fileClass{
@@ -15,8 +16,6 @@ module.exports = class fileClass{
     retreiveData (callback) {
 
         try {
-            console.log(this.filename)
-
             fs.readFile(this.filename, 'utf8', callback)
 
         } catch (error) {
@@ -47,10 +46,38 @@ module.exports = class fileClass{
             console.error(error)
         }
     }
+
+
+    /**
+     * delete specific data in the file
+     * @param {number} id 
+     * @param {function} callback 
+     */
+    deleteData(id, callback) {
+        try {
+
+            this.retreiveData((err, items) => {
+
+                if(err) throw err;
+
+                const data = JSON.parse(items)
+                delete data[id]
+                console.log(data)
+                fs.writeFile(this.filename,JSON.stringify(data, null, 4), 'utf8', callback)
+
+            })
+        } catch (error) {
+            console.error(error)
+        }
+    }
     
 }
 
-
+/**
+ * get lenght of file array table
+ * @param {string} filname 
+ * @returns number
+ */
 module.exports.getArrayLength =  (filname)=>{
     try {
         const data =  JSON.parse(fs.readFileSync(filname, 'utf8'))
@@ -58,7 +85,7 @@ module.exports.getArrayLength =  (filname)=>{
         return data.length
         
     } catch (error) {
-        
+        console.log(error)
     }
 
     

@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const cors = require('cors');
@@ -17,15 +18,17 @@ app.use(bodyParser.json())
 const apiEndpoint = "/api"
 
 app.use(apiEndpoint, todosRoute)
-console.log(__dirname)
+// console.log(__dirname)
 
-const date = new Date()
+// const date = new Date()
 
-console.log(date.toUTCString())
+// console.log(date.toUTCString())
 
-const myFileClass = new fileClass(todos)
+// const myFileClass = new fileClass(todos)
 
-console.log(typeof getArrayLength(todos))
+// myFileClass.deleteData(0)
+
+// console.log(typeof getArrayLength(todos))
 
 // myFileClass.getFileLength()
 

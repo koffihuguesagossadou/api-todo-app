@@ -4,16 +4,14 @@ const fileClass = require('../utils/files')
 const {getArrayLength} = require('../utils/files')
 const Todo = require('../models/todosModel')
 
-const todos = process.cwd() + '\\src\\data\\todos.json'
+const todoFile = process.cwd() + '\\src\\data\\todos.json'
 
-// instance of fileClass with json database givn as parameter
-const todosFile = new fileClass(todos)
+// instance of fileClass with json file given as parameter
+const todosFile = new fileClass(todoFile)
 
 exports.getTodos = (req, res)=>{
-    
-    
 
-    // retrive all data and send it to the client
+    // retreive all data and send it to the client
     todosFile.retreiveData(
         (err, data)=>{
             const todos = JSON.parse(data)
@@ -25,32 +23,49 @@ exports.getTodos = (req, res)=>{
 
 exports.addTodo = (req, res) => {
     
-    // console.log(req.body)
-    let genId = getArrayLength(todos)
-    
-    if (!(typeof genId === 'number')) {
+    if(!req.body.text || !req.body.Tags){
+        res.json("Bad request");
+    }else{
+
+        // console.log(req.body)
+        let genId = getArrayLength(todoFile)
         
-    }
-    else{
-        const date = new Date()
-        const todo = {
-            id: genId +1,
-            text : req.body.text,
-            created_at: date.toUTCString(),
-            Tags : req.body.Tags
+        if (!(typeof genId === 'number')) {
+            
         }
-
-        // add client data to file
-        todosFile.writeData(todo, err => {
-            if(err)
-            {
-                console.log(err)
-            }else{
-                res.json("ok sir")
+        else{
+            const date = new Date()
+            const todo = {
+                id: genId +1,
+                text : req.body.text,
+                created_at: date.toUTCString(),
+                Tags : req.body.Tags
             }
-        })
+    
+            // add client data to file
+            todosFile.writeData(todo, err => {
+                if(err)
+                {
+                    console.log(err)
+                }else{
+                    res.json("ok sir")
+                }
+            })
+        }
     }
     
+}
 
-    
+
+exports.deleteTodo = (req, res)=>{
+    const id = req.params.id
+    // console.log(getArrayLength(todoFile))
+    // console.log(id)
+    todosFile.deleteData(id, err=>{
+        if(err) throw err
+
+        console.log(getArrayLength(todoFile))
+        res.json("items delete")
+        
+    })
 }
