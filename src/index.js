@@ -6,35 +6,43 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 
 const todosRoute =  require('./routes/todosRoute')
-const {getArrayLength} = require('./utils/files')
-const fileClass = require('./utils/files')
-const todos = __dirname + '\\data\\todos.json'
-const port = 5000
 
-
- 
-app.use(cors())
-app.use(bodyParser.json())
+const port = process.env.PORT || '4000'
 
 const apiEndpoint = "/api"
+const whitelist = [ 
+    'https://doit-todo.netlify.app/',
+] 
+const corsOptions = {
+origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+    callback(null, true)
+    } else {
+    callback(new Error('Not allowed by CORS'))
+    }
+}
+}
 
+// setup CORS origin
+if (process.env.NODE_ENV=== 'prod') {
+    app.use(cors(corsOptions))
+}else{
+    app.use(cors())
+}
+
+
+// setup bodyParser for json responses
+app.use(bodyParser.json())
+
+// Express app routes
 app.use(apiEndpoint, todosRoute)
-// console.log(__dirname)
 
-// const date = new Date()
+// index route
+app.get('/', function (req, res, next) {
+    res.send('You should call api on /api/* endpoint')
+})
 
-// console.log(date.toUTCString())
-
-// const myFileClass = new fileClass(todos)
-
-// myFileClass.deleteData(0)
-
-// console.log(typeof getArrayLength(todos))
-
-// myFileClass.getFileLength()
-
-// myFileClass.readFile()
-
+// Listen app
 app.listen(port, ()=> {
     console.log(`api-app-todo listening on port ${port}`)
 })
