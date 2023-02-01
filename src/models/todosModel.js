@@ -29,4 +29,4 @@ const todosSchema = {
 
 }
 
-const Todo = module.exports = todosSchema;
+module.exports = todosSchema;
