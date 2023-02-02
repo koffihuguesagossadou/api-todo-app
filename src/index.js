@@ -30,7 +30,7 @@ if (process.env.NODE_ENV === 'prod') {
     app.use(cors())
 }
 
-
+console.log(process.env.NODE_ENV)
 // set up bodyParser for json responses
 app.use(bodyParser.json())
 
