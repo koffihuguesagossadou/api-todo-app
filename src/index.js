@@ -24,14 +24,14 @@ origin: function (origin, callback) {
 }
 
 // setup CORS origin
-if (process.env.NODE_ENV=== 'prod') {
+if (process.env.NODE_ENV === 'prod') {
     app.use(cors(corsOptions))
 }else{
     app.use(cors())
 }
 
 
-// setup bodyParser for json responses
+// set up bodyParser for json responses
 app.use(bodyParser.json())
 
 // Express app routes

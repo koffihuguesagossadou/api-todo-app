@@ -9,6 +9,12 @@ admin.initializeApp({
 
 const database = admin.database();
 
+/**
+ * Check if key exist
+ * @param {string} ref reference to an element in database
+ * @param {any} key element unique key in database
+ * @returns Promise contains true if key exist, false otherwise
+ */
 function checkChild(ref,key) {
     const dataRef = database.ref(ref)
 
@@ -26,20 +32,22 @@ function checkChild(ref,key) {
     }
 }
 
+/**
+ * 
+ * @param {string} ref reference to an element in database
+ * @returns {function} crud functions (get, post, )
+ */
 exports.crud = (ref)=> {
 
     const dataRef = database.ref(ref)
 
-    /**
-     * Check if a key exist
-     *
-     * @param {string} key The number to raise.
-     * @return {boolean} true if key exists, false otherwise
-     */
-
     
     return{
-        on: () =>{
+        /**
+         * retrieve dataS
+         * @returns {promise} promise containing dataS
+         */
+        readAll: () =>{
 
             return new Promise((resolve, reject)=>{
                 dataRef.on('value', snapShot=>{
@@ -48,13 +56,22 @@ exports.crud = (ref)=> {
             })
         },
 
-
-        push : (data) =>{
+        /**
+         * 
+         * @param {*} data 
+         * @returns 
+         */
+        create : (data) =>{
             return dataRef.push(data)
         },
 
 
-        remove: (id)=>{
+        /**
+         * delete specific data
+         * @param {string} id element id to delete
+         * @returns {Promise} Promise containing true if data is deleted, false otherwise
+         */
+        delete: (id)=>{
             
             const remove = checkChild(ref,id).exists()
                 .then(isExist=>{
@@ -75,7 +92,11 @@ exports.crud = (ref)=> {
             // return false;
         },
 
-
+        /**
+         * update specific data
+         * @param {string} id element id to update
+         * @returns {Promise} Promise containing true if data is update, false otherwise
+         */
         update : (data, id) =>{
             const update = checkChild(ref,id).exists()
                 .then(isExist=>{

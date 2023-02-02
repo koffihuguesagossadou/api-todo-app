@@ -22,15 +22,16 @@ const todosRef = 'todos';
 exports.getTodos = (req, res)=>{
 
     // retreive all data and send it to the client
-    crud(todosRef).on()
+    crud(todosRef).readAll()
         .then(data=>{
-            res.json({
+            res.status(200).json({
+                message:"succes",
                 data: data
             })
         })
         .catch(err=>{
-            res.json({
-                message:"An error is occured",
+            res.status(200).json({
+                message:"an error is occured",
                 display: err.message
             })
         })
@@ -40,7 +41,10 @@ exports.getTodos = (req, res)=>{
 exports.addTodo = (req, res) => {
     
     if(!req.body.text || !req.body.tags){
-        res.json("Bad request");
+        res.status(400).json({
+            message:"bad request",
+            description: "request parameters not define"
+        });
     }else{
         const date = new Date()
 
@@ -51,11 +55,11 @@ exports.addTodo = (req, res) => {
             is_complete: false
         }
 
-        const addTodo = crud(todosRef).push(data)
+        const addTodo = crud(todosRef).create(data)
         
-        res.json({
+        res.status(201).json({
             key : addTodo.key,
-            message: "Successfull"
+            message: "success"
         })
 
         // console.log(req.body)
@@ -89,10 +93,17 @@ exports.addTodo = (req, res) => {
 
 
 exports.deleteTodo = (req, res)=>{
+
     const id = req.params.id
 
+    if(!id){
+        res.status(400).json({
+            message: "bad request",
+            description: "request parameters not define"
+        })
+    }
 
-    const removeItem = crud(todosRef).remove(id)
+    const removeItem = crud(todosRef).delete(id)
     removeItem.then(
         isDelete=>{
             if(isDelete){
@@ -100,8 +111,9 @@ exports.deleteTodo = (req, res)=>{
                     message : "success"
                 })
             }else{
-                res.json({
-                    message : "Bad request"
+                res.status(200).json({
+                    message : "bad request",
+                    description: "this item does not exist"
                 })
             }
         }
@@ -137,6 +149,11 @@ exports.updateTodo = (req, res) => {
                 }
             }
         )
+    }else{
+        res.status(400).json({
+            message: "bad request",
+            description: "the requested page does not exist"
+        })
     }
 
 }
