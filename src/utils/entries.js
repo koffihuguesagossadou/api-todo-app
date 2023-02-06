@@ -1,11 +1,27 @@
 
-// function reqValidator(data) {
+/**
+ * Function whom remove brackets
+ * @param {string} entrie The string to parse
+ * @returns A string without brackets
+ */
+module.exports.removeBarckets = function(entrie) {
 
-//     const regexp = ""
+    const regexp = /(<|>)/g
 
-//     for (const key in data) {
-//         const dataTrim = data[key].trim()
-//         dataTrim.test(string)
-//     }
+    return{
+        string: ()=>{
+            entrie = entrie.trim()
+            return entrie.replaceAll(regexp, "")
+            
+        },
 
-// }
+        array: ()=>{
+            return entrie.map((value, index) =>{
+                value = value.trim();
+                return value.replaceAll(regexp, "")
+            });
+        }
+    }
+    
+    
+}

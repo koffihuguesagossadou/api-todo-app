@@ -6,7 +6,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 
 const todosRoute =  require('./routes/todosRoute')
-
+const {removeBarckets} = require('./utils/entries')
 const port = process.env.PORT || '4000'
 
 const apiEndpoint = "/api"
@@ -24,13 +24,13 @@ origin: function (origin, callback) {
 }
 
 // setup CORS origin
-if (process.env.NODE_ENV === 'prod') {
+if (process.env.NODE_ENV === 'production') {
     app.use(cors(corsOptions))
 }else{
     app.use(cors())
 }
 
-console.log(process.env.NODE_ENV)
+
 // set up bodyParser for json responses
 app.use(bodyParser.json())
 
