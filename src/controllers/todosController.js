@@ -1,5 +1,6 @@
 
 const {crud} = require('../utils/crud');
+const { removeBarckets } = require('../utils/entries')
 // const admin = require("firebase-admin");
 // const serviceAccount = require("../../serviceAccountKey.json");
 
@@ -47,88 +48,76 @@ exports.addTodo = (req, res) => {
         });
     }else{
         const date = new Date()
-
+        //console.log(body)
+        
         const data = {
-            todoName : req.body.text,
-            tags: req.body.tags,
+            todoName : removeBarckets(req.body.text).string(),
+            tags: removeBarckets(req.body.tags).array(),
             created_at: date.toUTCString(),
             is_complete: false
         }
+        
 
         const addTodo = crud(todosRef).create(data)
-        
-        res.status(201).json({
-            key : addTodo.key,
-            message: "success"
-        })
-
-        // console.log(req.body)
-        /*let genId = getArrayLength(todoFile)
-        
-        if (!(typeof genId === 'number')) {
-            
-        }
-        else{
-            const date = new Date()
-            const todo = {
-                id: genId +1,
-                text : req.body.text,
-                created_at: date.toUTCString(),
-                Tags : req.body.Tags
-            }
-    
-            // add client data to file
-            todosFile.writeData(todo, err => {
-                if(err)
-                {
-                    console.log(err)
-                }else{
-                    res.json("ok sir")
-                }
+        if(addTodo!==null){
+            res.status(201).json({
+                key : addTodo.key,
+                message: "success",
+                description: "Todo added."
             })
-        }*/
+        }else{
+            res.status(201).json({
+                key : addTodo.key,
+                message: "fail",
+                description: "Something wrong happened, please try again."
+            })
+        }
+        
+        
+        
     }
     
 }
 
 
 exports.deleteTodo = (req, res)=>{
-
-    const id = req.params.id
+    
+    const id = removeBarckets(req.params.id).string()
 
     if(!id){
         res.status(400).json({
             message: "bad request",
-            description: "request parameters not define"
+            description: "request parameters not defined"
         })
-    }
+    }else{
 
-    const removeItem = crud(todosRef).delete(id)
-    removeItem.then(
-        isDelete=>{
-            if(isDelete){
-                res.json({
-                    message : "success"
-                })
-            }else{
-                res.status(200).json({
-                    message : "bad request",
-                    description: "this item does not exist"
-                })
+        const removeItem = crud(todosRef).delete(id)
+        removeItem.then(
+            isDelete=>{
+                if(isDelete){
+                    res.json({
+                        message : "success",
+                        description: "your item has been deleted"
+                    })
+                }else{
+                    res.status(200).json({
+                        message : "bad request",
+                        description: "this item does not exist"
+                    })
+                }
             }
-        }
-    )
-    
+        )
+    }
 }
 
 exports.updateTodo = (req, res) => {
 
-    const id = req.params.id
+    const id = removeBarckets(req.params.id).string()
     const date = new Date()
 
     const data = {
-        todoName : req.body.text,
-        tags: req.body.tags,
+        todoName : removeBarckets(req.body.text).string(),
+        tags: removeBarckets(req.body.tags).array(),
         created_at: date.toUTCString(),
         is_complete: false
     }
@@ -136,15 +125,16 @@ exports.updateTodo = (req, res) => {
     if(id){
 
         const updateItem = crud(todosRef).update(data, id)
-        updateItem.then(
-            isUpdate=>{
+        updateItem.then(isUpdate=>{
                 if (isUpdate) {
                     res.json({
-                        message: "success"
+                        message: "success",
+                        description: "Your item has been updated"
                     })    
                 }else{
                     res.json({
-                        message: "bad request"
+                        message: "bad request",
+                        description: "Something happen, please try again."
                     })
                 }
             }

@@ -37,7 +37,7 @@ function checkChild(ref,key) {
  * @param {string} ref reference to an element in database
  * @returns {function} crud functions (get, post, )
  */
-exports.crud = (ref)=> {
+module.exports.crud = (ref)=> {
 
     const dataRef = database.ref(ref)
 
@@ -58,7 +58,7 @@ exports.crud = (ref)=> {
 
         /**
          * 
-         * @param {*} data 
+         * @param {object} data List of values to create in database 
          * @returns 
          */
         create : (data) =>{
